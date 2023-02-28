@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FlightsRequest;
 use App\Models\Aircrafts;
 use App\Models\Cities;
 use App\Models\Countries;
 use App\Models\Flights;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 
 class FlightsController extends Controller
@@ -20,8 +22,14 @@ class FlightsController extends Controller
     public function index()
     {
         $flights = Flights::all();
+        $now =  Carbon::now();
+        $week = $now->subDays(7);
+        // dd($week);
+        // $tomorrow = $now->tomorrow();
+        $tomorrow = Carbon::tomorrow()->format('d-m-Y H:i:s');
 
-        return view('admin/flights/index',compact('flights'));
+
+        return view('admin/flights/index',compact('flights','week','tomorrow'));
     }
 
     /**
@@ -32,10 +40,14 @@ class FlightsController extends Controller
     public function create()
     {
         $flight  = new Flights();
-        $countries = Countries::pluck('name', 'id')->toArray();
-        $citiesOfDispatch = Cities::where('country_id', $flight->countryOfDispatch_id)->pluck('name', 'id')->toArray();
-        $citiesOfArrival = Cities::where('country_id', $flight->countryOfArrival_id)->pluck('name', 'id')->toArray();
-
+        $flight->countryOfDispatch_id = '';
+        $countries=[];
+        $countries +=[
+            '' => 'Виберіть Країну'
+        ];
+        $countries += Countries::pluck('name', 'id')->toArray();
+        $citiesOfDispatch = [];
+        $citiesOfArrival = [];
         $aircrafts = Aircrafts::pluck('name', 'id')->toArray();
 
         return view('admin/flights/create', compact('countries','aircrafts','flight', 'citiesOfDispatch', 'citiesOfArrival'));
@@ -58,7 +70,7 @@ class FlightsController extends Controller
         return response()->json($html);
     }
 
-    public function store(Request $request)
+    public function store(FlightsRequest $request)
     {
         $aircrafts = new  Flights();
         $aircrafts->fill($request->all());

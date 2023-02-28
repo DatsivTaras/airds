@@ -20,9 +20,9 @@ class Flights extends Model
         'aircraft_id',
     ];
 
-    public static function formatDateFlight($date)
+    public function formatDateFlight($date)
     {
-        return Carbon::createFromFormat('Y-m-d', $date)->format('m/d/Y');
+        return Carbon::parse($date)->format('d-m-Y H:i:s');
     }
     public function countryOfDispatch()
     {

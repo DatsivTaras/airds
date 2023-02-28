@@ -30,7 +30,7 @@
                                 <td>{{$aircraft->second_class}}</td>
                                 <td>{{$aircraft->economy_class}}</td>
                                 <td>{{$aircraft->description}}</td>
-                                <td><a href='/admin/aircrafts/{{$aircraft->id}}/edit' class='destroyAircrafts btn btn-secondary'>Редагувати</ф></td>
+                                <td><a href='/admin/aircrafts/{{$aircraft->id}}/edit' class='destroyAircrafts btn btn-secondary' >Редагувати</ф></td>
                                 <td><button data-id='{{$aircraft->id}}' class='destroyAircrafts btn btn-danger'>Видалити</button></td>
                             </tr>
                         @endforeach

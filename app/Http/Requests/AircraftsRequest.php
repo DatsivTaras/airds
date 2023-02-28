@@ -26,9 +26,9 @@ class AircraftsRequest extends FormRequest
         return [
             'name' => 'required',
             'aircrafts_image' => 'required',
-            'second_class' => 'required',
-            'first_class' => 'required',
-            'economy_class' => 'required',
+            'second_class' => 'required|numeric|min:10',
+            'first_class' => 'required|numeric|max:10',
+            'economy_class' => 'required|numeric|min:10|max:50',
             'description' => 'required',
 
         ];
@@ -37,6 +37,11 @@ class AircraftsRequest extends FormRequest
     {
         return [
             'required' => 'Поле :attribute не може бути пустим  ',
+            'economy_class.min' => 'Неможе бути менше 10 символів',
+            'economy_class.max' => 'Неможе бути більше 50 символів',
+            'first_class.min' => 'Неможе бути менше 10 символів',
+            'second_class.min' => 'Неможе бути менше 10 символів',
+
         ];
     }
 }

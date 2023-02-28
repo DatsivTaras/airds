@@ -7,7 +7,7 @@
 <div class='container'>
         <div class="row">
             <div class="col-md-2"></div>
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <table class="table">
                     <thead>
                         <tr>
@@ -27,13 +27,13 @@
                                 <th>{{$flight->id}}</th>
                                 <th>{{$flight->countryOfDispatch->name}}</th>
                                 <th>{{$flight->citiOfDispatch->name}}</th>
-                                <th>{{$flight->dateOfDispatch}}</th>
+                                <th>{{$flight->formatDateFlight($flight->dateOfDispatch)}}</th>
                                 <th>{{$flight->countryOfArrival->name}}</th>
                                 <th>{{$flight->citiOfArrival->name}}</th>
-                                <th>{{$flight->dateOfArrival}}</th>
+                                <th>{{$flight->formatDateFlight($flight->dateOfArrival)}}</th>
                                 <th>{{$flight->aircrafts->name}}</th>
-                                <td><a href='/admin/flights/{{$flight->id}}/edit'  class="btn btn-secondary">Редагувати</a></td>
-                                <td><button id='destroyflights ' data-id='{{$flight->id}}' class=" destroyflights  btn btn-danger">Видалити</button></td>
+                                <td><a href='/admin/flights/{{$flight->id}}/edit'  class="btn btn-secondary" {{ strtotime($flight->formatDateFlight($flight->dateOfDispatch)) > strtotime($tomorrow) ? '' : 'hidden'}} >Редагувати</a></td>
+                                <td><button  id='destroyflights ' data-id='{{$flight->id}}' class=" destroyflights  btn btn-danger" {{strtotime($flight->formatDateFlight($flight->dateOfDispatch)) > strtotime($tomorrow) || strtotime($flight->formatDateFlight($flight->dateOfDispatch)) < strtotime($week) ? '' : 'hidden'}}>Видалити</button></td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -41,9 +41,12 @@
             </div>
         </div>
     </div>
+<!-- {{strtotime($flight->formatDateFlight($flight->dateOfDispatch))}}<br>
+{{strtotime($tomorrow)}} -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script>
        $(function(){
+
             $(document).on('click', '.destroyflights', function(){
                 var id = $(this).data('id');
                 $.ajax({
