@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FlightsRequest;
 use App\Models\Aircrafts;
+use App\Models\Booking;
 use App\Models\Cities;
 use App\Models\Countries;
 use App\Models\Flights;
+use App\Models\Orders;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
@@ -21,6 +23,7 @@ class FlightsController extends Controller
      */
     public function index()
     {
+
         $flights = Flights::all();
         $now =  Carbon::now();
         $week = $now->subDays(7);
@@ -72,11 +75,39 @@ class FlightsController extends Controller
 
     public function store(FlightsRequest $request)
     {
-        $aircrafts = new  Flights();
-        $aircrafts->fill($request->all());
-        $aircrafts->save();
+        $flight = new  Flights();
+        $flight->fill($request->all());
+        $flight->save();
 
-         return redirect('/admin/flights');
+        for ($i = 1; $i <= $flight->aircrafts->economy_class; $i++) {
+            $booking = new  Booking();
+            $booking->flight_id = $flight->id;
+            $booking->class= '3';
+            $booking->place= $i;
+            $booking->price= $flight->price_economy_class;
+
+            $booking->save();
+        }
+        for ($i = 1; $i <= $flight->aircrafts->first_class; $i++) {
+            $booking = new  Booking();
+            $booking->flight_id = $flight->id;
+            $booking->class= '1';
+            $booking->place= $i;
+            $booking->price= $flight->price_first_class;
+
+            $booking->save();
+        }
+        for ($i = 1; $i <= $flight->aircrafts->second_class; $i++) {
+            $booking = new  Booking();
+            $booking->flight_id = $flight->id;
+            $booking->class= '2';
+            $booking->place= $i;
+            $booking->price= $flight->price_second_class;
+
+            $booking->save();
+        }
+
+        return redirect('/admin/flights');
     }
 
     /**
@@ -139,4 +170,21 @@ class FlightsController extends Controller
 
         return true;
     }
+
+    public function placeOfClasses(Request $request)
+    {
+        $html = '';
+        $userId = auth()->id();
+        $classes = Booking::where('class', $request->id)
+            ->doesntHave('orderFlight', 'and', function($query) use($userId){
+                $query->whereHas('order', function($query) use($userId) {
+                    $query->where('user_id', $userId);
+                });
+            })
+            ->where('status', NULL)
+            ->where('flight_id', $request->flightId)->get()->toArray();
+
+        return response()->json($classes);
+    }
+
 }

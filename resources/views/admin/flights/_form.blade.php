@@ -1,20 +1,3 @@
-<!-- 1.ВИберіть країну перше в списку
-1.ВИберіть країну обовязковим полем
-2.місто має бути обовязковим
-2.дата обовязкова
-2.дата немає бути меншою за завтра
-2.http://airds.club.ua/admin/flights якшо в рейса дата відправки менша за завтра тоді кнопки редагувати немає бути за тиждень видалити
-2.помвняти формат дати
-2.добавити всі міста і країни в бд
-2. -->
-кнопка редагувати лише тоді коли дата більша за завтра обо зав
-кноп вид має бути коли дата більша за завтра або від дати видправкт пройшов тиждень
-1 клас не більше 10
-2 клас не менш 10
-3 клас не менш 10і не більше 50
-при ін видавати помилку
-
-
     @if(!$flight->id)
         {{ Form::open(['route' => ['admin.flights.store', $flight->id], 'method' => 'post']) }}
     @else
@@ -56,15 +39,30 @@
             @error('aircraft_id')
             <h7 style='color:red'>{{$message}}</h7><br>
             @enderror
+
+            {{ Form::label('text', ' Ціна 1 клас', ['class' => 'form-label']) }}
+            {{ Form::number('price_first_class', '' , ) }}
+            @error('first_class')
+            <h7 style='color:red'>{{$message}}</h7><br>
+            @enderror
+            {{ Form::label('text', 'Ціна 2 клас', ['class' => 'form-label']) }}
+            {{ Form::number('price_second_class', '' ,) }}
+            @error('second_class')
+            <h7 style='color:red'>{{$message}}</h7><br>
+            @enderror
+            {{ Form::label('text', 'Ціна Економ', ['class' => 'form-label']) }}
+            {{ Form::number('price_economy_class', '' ,  ) }}
+            @error('economy_class')
+            <h7 style='color:red'>{{$message}}</h7><br>
+            @enderror
         </div>
-        <input type='date' min='2023-02-28' max='2023-03-01'></input>
         <div align='center'>
             {{ Form::submit(!$flight->id ? __('Створити') : __('Редагувати'), ['class' => 'btn btn-primary'])}}
         </div>
     {{ Form::close() }}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-<script>
+    <script>
         $(document).ready(function (){
             if("{{!$flight->id}}"){
                 $("#citiOfDispatch").attr('disabled','disabled')
@@ -111,5 +109,4 @@
             });
         });
     </script>
-
 </script>

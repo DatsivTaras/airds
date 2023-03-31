@@ -15,6 +15,15 @@
             <a class="nav-link" href="/admin/aircrafts" id="navbarDarkDropdownMenuLink"  aria-expanded="false">
                 Літаки
             </a>
+            <a class="nav-link" href="/admin/orders" id="navbarDarkDropdownMenuLink"  aria-expanded="false">
+                Закази
+            </a>
+            <a class="nav-link" href="/admin/delivery" id="navbarDarkDropdownMenuLink"  aria-expanded="false">
+                Способи доставки
+            </a>
+            <a class="nav-link" href="/admin/users" id="navbarDarkDropdownMenuLink"  aria-expanded="false">
+                Користувачі
+            </a>
       </ul>
     </div>
   </div>

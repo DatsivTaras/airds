@@ -18,8 +18,16 @@ class Flights extends Model
         'citiOfArrival_id',
         'dateOfArrival',
         'aircraft_id',
+        'price_first_class',
+        'price_second_class',
+        'price_economy_class',
+        'price',
     ];
 
+    public function booking()
+    {
+        return $this->hasOne(Booking::class, 'flight_id','id')->where('user_id',auth()->id());
+    }
     public function formatDateFlight($date)
     {
         return Carbon::parse($date)->format('d-m-Y H:i:s');

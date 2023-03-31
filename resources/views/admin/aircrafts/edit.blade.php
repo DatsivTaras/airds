@@ -8,5 +8,5 @@
             @include('/admin/aircrafts/_form')
         </div>
     </div>
-</div
+</div>
 @endsection

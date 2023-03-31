@@ -31,10 +31,12 @@
             <h7 style='color:red'>{{$message}}</h7><br>
             @enderror
             {{ Form::label('text', 'Економ', ['class' => 'form-label']) }}
-            {{ Form::number('economy_class', $aircraft->economy_class , ['min' => '10', 'max' => '50'] ) }}
+            {{ Form::number('economy_class', $aircraft->economy_class ,  ) }}
             @error('economy_class')
             <h7 style='color:red'>{{$message}}</h7><br>
-            @enderror
+            @enderror<br>
+
+
 
 
       </div>
