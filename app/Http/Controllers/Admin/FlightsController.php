@@ -48,8 +48,6 @@ class FlightsController extends Controller
     public function create()
     {
 
-
-
         $flight  = new Flights();
         $flight->countryOfDispatch_id = '';
         $countries=[];
@@ -75,14 +73,19 @@ class FlightsController extends Controller
     {
 
         $movies = [];
+        $html = '';
         if($request->has('q')){
             $search = $request->q;
             $movies = DB::table('cities')
                 ->selectRaw( 'cities.id as id , JSON_UNQUOTE(JSON_EXTRACT(language_lines.text, "$.'.session()->get('applocale').'")) as name')
                 ->join('language_lines', 'cities.name', '=', 'language_lines.key')
                 ->where('country_id', $request->id)
-                ->where('name', 'LIKE', "%$search%")
+                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(language_lines.text, '$.".session()->get('applocale')."')) LIKE '%".$search."%'")
                 ->get();
+
+                foreach ($movies as $citi){
+                    $html.= '<option value ="'.$citi->id.'">'.$citi->name.'</option>';
+                }
         }
         return response()->json($movies);
 
@@ -101,13 +104,11 @@ class FlightsController extends Controller
 
         if($request->has('q')){
             $search = $request->q;
-            // $movies = Country::select("id", "name")
-            // 		->where('name', 'LIKE', "%$search%")
-            // 		->get();
+
             $countries = DB::table('countries')
                 ->selectRaw('countries.id as id, JSON_UNQUOTE(JSON_EXTRACT(language_lines.text, "$.'.session()->get('applocale').'")) as name')
                 ->join('language_lines', 'countries.name', '=', 'language_lines.key')
-                ->where('name', 'LIKE', "%$search%")
+                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(language_lines.text, '$.".session()->get('applocale')."')) LIKE '%".$search."%'")
                 ->get();
             }
         return  response()->json($countries);

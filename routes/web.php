@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [App\Http\Controllers\FlightsController::class, 'index'])->name('/');
     Route::get('/flight/view/{id}', [App\Http\Controllers\FlightsController::class,'view'])->name('flight.view');
     Route::post('/flight/allComments', [App\Http\Controllers\FlightsController::class,'allComments'])->name('flight.allComments');
+    Route::get('/flights/citi-of-flights', [App\Http\Controllers\FlightsController::class,'citiOfFlights'])->name('flights.citi-of-flights');
 
 Route::group(['middleware' => ['role:Admin|SuperAdmin']], function () {
     Route::get('admin/user/delete', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.user.delete');
@@ -41,7 +42,6 @@ Route::group(['middleware' => ['role:Admin|SuperAdmin']], function () {
 });
 Route::group(['middleware' => ['role:User|Admin|SuperAdmin']], function () {
 
-    Route::get('/flights/citi-of-flights', [App\Http\Controllers\FlightsController::class,'citiOfFlights'])->name('flights.citi-of-flights');
     Route::get('/orderProcessing/edit/{id}', [App\Http\Controllers\Admin\OrdersController::class, 'editOrderProcessing'])->middleware('verified')->name('orderProcessing.edit');
     Route::post('/orderProcessing', [App\Http\Controllers\Admin\OrdersController::class, 'orderProcessing'])->middleware('verified')->name('orderProcessing');
     Route::get('/profile/booking', [App\Http\Controllers\BookingController::class, 'myBooking'])->middleware('verified')->name('profile.booking');

@@ -19,7 +19,7 @@ class FlightsController extends Controller
 {
     public function index(Request $request)
     {
-        // dd(session()->get('applocale'));
+
         $flights =  Flights::query();
         $now =  Carbon::now();
         $week = $now->subDays(7);

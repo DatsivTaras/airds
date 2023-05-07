@@ -42,17 +42,17 @@
         <div class="col-sm-6">
             <div class="card">
                 <div class="card-body">
-                    {{ Form::label('text',  __('main.countryOfDispatch'), ['class' => 'form-label']) }}
+                    {{ Form::label('text',  __('main.countryOfArrival'), ['class' => 'form-label']) }}
                     {{ Form::select('countryOfArrival_id', $countries , $flight->countryOfArrival_id , ['class' => 'countryOfArrival form-select','id'=>'countryOfArrival']) }}
                     @error('countryOfArrival_id')
                     <h7 style='color:red'>{{$message}}</h7><br>
                     @enderror
-                    {{ Form::label('text',  __('main.citiOfDispatch'), ['class' => 'form-label']) }}
+                    {{ Form::label('text',  __('main.citiOfArrival'), ['class' => 'form-label']) }}
                     {{ Form::select('citiOfArrival_id', $citiesOfArrival , $flight->citiOfArrival_id , ['class' => 'citiOfArrival form-select', 'id'=>'citiOfArrival']) }}
                     @error('citiOfArrival_id')
                     <h7 style='color:red'>{{$message}}</h7><br>
                     @enderror
-                    {{ Form::label('text',  __('main.dateOfDispatch'), ['class' => 'form-label']) }}
+                    {{ Form::label('text',  __('main.dateOfArrival'), ['class' => 'form-label']) }}
                     {{ Form::dateTimelocal('dateOfArrival', $flight->dateOfArrival	, ['class' => 'form-control', 'min' => now()->format('Y-m-d H:i') ]) }}
                     @error('dateOfArrival')
                     <h7 style='color:red'>{{$message}}</h7><br>
@@ -110,7 +110,9 @@
                                 text: item.name,
                                 id: item.id,
                             }
+
                         })
+
                     };
                 },
                 cache: true
@@ -135,6 +137,7 @@
                                 text: item.name,
                                 id: item.id,
                             }
+                            alert('d');
                         })
                     };
                 },
