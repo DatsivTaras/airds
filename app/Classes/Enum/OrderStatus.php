@@ -7,11 +7,9 @@ namespace App\Classes\Enum;
  */
 class OrderStatus
 {
-
     const BASKET = 0;
     const BOOKED = 1;
     const CONFIRMED = 2;
     const DENIED = 3;
-
 }
 ?>

@@ -19,7 +19,7 @@
       @if ($order && $order->orderFlight()->exists())
     <h2 align='center'>Кошик</h2>
   <div class='container'>
-    <h1 align='center'>Заброньовано</h1><br>
+    <h1 align='center'>@lang('main.booking')</h1><br>
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-12">
@@ -27,16 +27,15 @@
                     <thead>
                         <tr>
                             <!-- <th scope="col">ID</th> -->
-                            <th scope="col">Країна Відправки</th>
-                            <th scope="col">Місто Відправки</th>
-                            <th scope="col">Дата Відправки</th>
-                            <th scope="col">Країна Прибуття</th>
-                            <th scope="col">Місто Прибуття</th>
-                            <th scope="col">Дата Прибуття</th>
-                            <th scope="col">Літак</th>
-                            <th scope="col">класс</th>
-                            <th scope="col">місце</th>
-                            <th scope="col">ціна</th>
+                            <th scope="col">@lang('main.citiOfDispatch')</th>
+                            <th scope="col">@lang('main.dateOfDispatch')</th>
+                            <th scope="col">@lang('main.countryOfArrival')</th>
+                            <th scope="col">@lang('main.citiOfArrival')</th>
+                            <th scope="col">@lang('main.dateOfArrival')</th>
+                            <th scope="col">@lang('main.aircraft')</th>
+                            <th scope="col">@lang('main.class')</th>
+                            <th scope="col">@lang('main.place')</th>
+                            <th scope="col">@lang('main.price')</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,6 +72,7 @@
     </div>
   </div>
 </div>
+
 @endsection
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script>

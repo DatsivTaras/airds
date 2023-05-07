@@ -7,7 +7,6 @@ namespace App\Classes\Enum;
  */
 class UserStatus
 {
-
     const NEW = 1;
     const ACTIVE = 2;
     const DELETED = 3;

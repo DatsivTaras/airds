@@ -3,7 +3,7 @@
 @section('content')
 
 
-<h3 align='center'>Редагувати доставку</h3>
+<h3 align='center'>@lang('main.updateDelivery')</h3>
     <div class="row">
         <div class="col-md-4"></div>
         <div class="col-md-5">

@@ -21,11 +21,17 @@ class BasketController extends Controller
         $order = Orders::where('user_id', auth()->id())
             ->where('status', OrderStatus::BASKET)
             ->first();
+            if (!$order) {
+                $order = new Orders();
+                $order->user_id = auth()->id();
+                $order->status = OrderStatus::BASKET;
+                $order->save();
+            }
         $ordersFlight = [];
         foreach($order->orderFlight as $flight) {
             $ordersFlight[] = [
                 'id' => $flight->id,
-                'title' => $flight->flight->countryOfDispatch->name.'-'.$flight->flight->countryOfArrival->name,
+                'title' => trans('country.'.mb_strtolower($flight->flight->countryOfDispatch->name)).'-'.trans('country.'.mb_strtolower($flight->flight->countryOfArrival->name)),
                 'link' => '/flight/view/'.$flight->flight->id,
                 'time' => $flight->flight->formatDateFlight($flight->dateOfDispatch).'--'.$flight->flight->formatDateFlight($flight->dateOfArrival),
                 'price' => $flight->booking->price
@@ -43,21 +49,29 @@ class BasketController extends Controller
     {
          $booking = Booking::where('flight_id' , $id)->where('class' ,$request->classes)->where('place' ,$request->places)->first();
          $order = Orders::where('user_id',auth()->user()->id)->where('status', OrderStatus::BASKET)->first();
+        if(!$booking->bookingBasket()){
+            if (!$order) {
+                $order = new Orders();
+                $order->user_id = auth()->id();
+                $order->status = OrderStatus::BASKET;
+                $order->save();
+            }
 
-        if (!$order) {
-            $order = new Orders();
-            $order->user_id = auth()->id();
-            $order->status = OrderStatus::BASKET;
-            $order->save();
+            $ordersProduct = new OrdersFlights();
+            $ordersProduct->flight_id = $id;
+            $ordersProduct->booking_id = $booking->id;
+            $ordersProduct->order_id = $order->id;
+            $ordersProduct->save();
+
+            $booking = Booking::find($booking->id);
+            $booking->user_id = auth()->id();
+            $booking->status = OrderStatus::BOOKED;
+            $booking->save();
+        } else{
+            dd('Неможливо додати');
         }
 
-         $ordersProduct = new OrdersFlights();
-         $ordersProduct->flight_id = $id;
-         $ordersProduct->booking_id = $booking->id;
-         $ordersProduct->order_id = $order->id;
-         $ordersProduct->save();
-
-         return redirect('/flight/view/'.$id);
+        return redirect('/flight/view/'.$id);
     }
     /**
      * Show the form for creating a new resource.
@@ -123,9 +137,14 @@ class BasketController extends Controller
      */
     public function destroy(Request $request)
     {
-        $aircrafts = OrdersFlights::where('id', $request->id)->first();
-        $aircrafts->delete();
+        $ordersFlights = OrdersFlights::where('id', $request->id)->first();
 
+        $booking = Booking::find($ordersFlights->booking_id);
+        $booking->user_id = NULL;
+        $booking->status = NULL;
+        $booking->save();
+
+        $ordersFlights->delete();
         return true;
 
     }

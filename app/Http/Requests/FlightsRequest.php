@@ -28,15 +28,18 @@ class FlightsRequest extends FormRequest
             'citiOfDispatch_id' => 'required',
             'dateOfDispatch' => 'required',
             'countryOfArrival_id' => 'required',
-            'citiOfArrival_id' => 'required',
+            'citiOfArrival_id' => 'required|different:citiOfDispatch_id',
             'dateOfArrival' => 'required',
             'aircraft_id' => 'required',
+
         ];
     }
+
     public function messages()
     {
         return [
             'required' => 'Поле :attribute має бути вибране  ',
+
         ];
     }
 }

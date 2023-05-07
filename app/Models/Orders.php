@@ -15,6 +15,7 @@ class Orders extends Model
         'surname',
         'phone',
         'delivery_id',
+
     ];
 
     public function orderFlight()
@@ -32,20 +33,18 @@ class Orders extends Model
     {
         return [
             OrderStatus::BASKET => 'В кошику',
-            OrderStatus::BOOKED => 'Заброньовано',
+            OrderStatus::BOOKED => ' Вочікуванні',
             OrderStatus::CONFIRMED => 'Підтверджено',
             OrderStatus::DENIED => 'Відмінено'
         ];
     }
 
-    public function sum($order)
+    public function sum()
     {
         $sum= '0';
-        foreach($order->orderFlight as $orderFlight){
-
+        foreach($this->orderFlight as $orderFlight){
             $price = $orderFlight->booking->price;
             $sum = $sum + $price ;
-
         }
         return $sum ;
     }

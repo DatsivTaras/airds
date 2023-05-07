@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use PhpParser\Node\Expr\PostDec;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,12 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        // Gate::define('profile', function(User $user, Post $post){
+
+
+
+        // });
 
         //
     }

@@ -1,89 +1,103 @@
 @extends('menu/topMenu')
 
 @section('content')
-<h2 align='center'>Оформлення Замовлення</h2>
-
-<div class='container'>
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-9">
-                <form class="row g-3">
-                    <div class="form-group col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">Ім'я</label>
-                        <input type="text" class="form-control" id="inputName">
+<h1 align='center'>Оформлення замовлення</h1><br><br>
+<html lang="en">
+  <body class="bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 order-md-2 mb-4">
+          <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Your cart</span>
+            <span class="badge badge-secondary badge-pill">3</span>
+          </h4>
+          @foreach($order->orderFlight as $flight)
+            <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                        <h6 class="my-0">{{$flight->flight->countryOfDispatch->name}}-{{$flight->flight->countryOfArrival->name}}</h6>
+                        <small class="text-muted">{{$flight->flight->formatDateFlight($flight->dateOfDispatch)}}</small>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">Прізвище</label>
-                        <input type="text" class="form-control" id="inputSurname">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">Електронна адреса</label>
-                        <input type="email" class="form-control" id="inputEmail">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">Номер Телефону</label>
-                        <input type="tel" class="form-control" id="inputPhoneNumber">
-                    </div>
-                </form><br><br>
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">Країна Відправки</th>
-                            <th scope="col">Місто Відправки</th>
-                            <th scope="col">Дата Відправки</th>
-                            <th scope="col">Країна Прибуття</th>
-                            <th scope="col">Місто Прибуття</th>
-                            <th scope="col">Дата Прибуття</th>
-                            <th scope="col">Літак</th>
-                            <th scope="col">класс</th>
-                            <th scope="col">місце</th>
-                            <th scope="col">ціна</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($order->orderFlight as $flight)
-                            <tr>
-                                <th>{{$flight->flight->countryOfDispatch->name}}</th>
-                                <th>{{$flight->flight->citiOfDispatch->name}}</th>
-                                <th>{{$flight->flight->formatDateFlight($flight->dateOfDispatch)}}</th>
-                                <th>{{$flight->flight->countryOfArrival->name}}</th>
-                                <th>{{$flight->flight->citiOfArrival->name}}</th>
-                                <th>{{$flight->flight->formatDateFlight($flight->dateOfArrival)}}</th>
-                                <th>{{$flight->flight->aircrafts->name}}</th>
-                                <th>{{$flight->booking->class}}</th>
-                                <th>{{$flight->booking->place}}</th>
-                                <th>{{$flight->booking->class}}</th>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                @foreach($deliveries as $delivery)
-                    <div class="form-check">
-                        <input  class="form-check-input" type="radio" name="exampleRadios" id="delivery" value="{{$delivery->id}}" checked>
-                        <label class="form-check-label" for="exampleRadios1"><h5>{{$delivery->name}}</h5></label>
-                    </div>
-                @endforeach
-                <br><div>
-                   <b>Сума</b> : {{$order->sum($order)}}
+                    <span class="text-muted">${{$flight->booking->price}}</span>
+                </li>
+            @endforeach
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Разом</span>
+              <strong>${{$order->sum($order)}}</strong>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-8 order-md-1">
+          <h4 class="mb-3">Контактні дані</h4>
+          <form class="needs-validation" novalidate>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="firstName">Ім'я</label>
+                <input name='name' type="text" class="form-control" id="inputName" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid first name is required.
                 </div>
-                <div align='center'>
-                    <a data-id='{{$order->id}}'  class="processing btn btn-primary" >Оформити</a>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="lastName">Прізвище</label>
+                <input name='surname' type="text" class="form-control" id="inputSurname" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid last name is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="email">Email <span class="text-muted"></span></label>
+                <input name='email' type="email" class="form-control" id="inputEmail" placeholder="you@example.com">
+                <div class="invalid-feedback">
+                    Please enter a valid email address for shipping updates.
                 </div>
             </div>
+
+            <div class="mb-3">
+              <label for="nomber">Номер Телефону <span class="text-muted"></span></label>
+              <input name='phone' type="text" class="form-control" id="inputPhoneNumber" placeholder="">
+            </div>
+            <h4 class="mb-3">Спосіб доставки</h4>
+
+            <div class="d-block my-3">
+                @foreach($deliveries as $delivery)
+                    <div class="form-check">
+                        <input name ="delivery_id" class="form-check-input" type="radio" id="delivery" value="{{$delivery->id}}" >
+                        <label class="form-check-label" for="exampleRadios1"><h6>{{$delivery->name}}</h6></label>
+                    </div>
+                @endforeach
+            </div>
+            <hr class="mb-4">
+            <a data-id='{{$order->id}}' class="processing btn btn-primary btn-lg btn-block" >Оформити Замовлення</a>
+          </form>
         </div>
+      </div>
+
+      <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">&copy; 2017-2018 Company Name</p>
+        <ul class="list-inline">
+          <li class="list-inline-item"><a href="#">Privacy</a></li>
+          <li class="list-inline-item"><a href="#">Terms</a></li>
+          <li class="list-inline-item"><a href="#">Support</a></li>
+        </ul>
+      </footer>
     </div>
+  </body>
+</html>
 
 @endsection
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script>
-       $(function(){
+     $(function(){
             $(document).on('click', '.processing', function(){
                 var id = $(this).data('id');
                 var name = $('#inputName').val();
                 var surname = $('#inputSurname').val();
                 var email = $('#inputEmail').val();
                 var phone = $('#inputPhoneNumber').val();
-                var delivery_id = $('input[name="exampleRadios"]:checked').val();
+                var delivery_id = $('input[name="delivery_id"]:checked').val();
                 $.ajax({
                     method: 'post',
                     url: "/orderProcessing",

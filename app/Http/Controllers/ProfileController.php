@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\Enum\UserStatus;
+use App\Http\Requests\PasswordRequest;
 use App\Models\User;
+use App\Models\UserInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -35,12 +39,25 @@ class ProfileController extends Controller
     public function destroy(Request $request)
     {
         $user = User::find(auth()->id());
-        $user->status = 1 ;
+        $user->status = UserStatus::DELETED;
         $user->save();
 
         Auth::logout();
 
         return true;
 
+    }
+
+    public function editChangePassword (Request $request)
+    {
+
+     return view('password/editpassword');
+    }
+
+    public function changePassword (PasswordRequest $request)
+    {
+        $user = User::find(auth()->id());
+        $user->password = Hash::make($request->password);
+        $user->save();
     }
 }

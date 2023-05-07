@@ -19,4 +19,14 @@ class Aircrafts extends Model
 
     ];
 
+    public static function hello()
+    {
+        return 'Ура робить';
+    }
+
+    public function aircraftMainImage()
+    {
+        return $this->hasOne(Aircraf_image::class, 'aircraft_id','id')->where('status', 1);
+    }
+
 }

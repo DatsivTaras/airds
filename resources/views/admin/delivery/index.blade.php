@@ -1,10 +1,8 @@
 @extends('menu/adminMenu')
 
 @section('content')
-<h2 align='center'>Способи Доставки</h2>
-<div align='right'>
-    <a href='delivery/create'>Додати</a>
-</div>
+<a align='left' href='delivery/create' type="button" class="btn btn-success">@lang('main.addDelivery')</a>
+<h2 align='center'>@lang('main.delivery')</h2>
 <div class='container'>
         <div class="row">
             <div class="col-md-2"></div>
@@ -12,10 +10,10 @@
                 <table class="table">
                     <thead>
                         <tr>
-
-                            <th scope="col">Назва</th>
-                            <th scope="col">Редагувати</th>
-                            <th scope="col">Видалити</th>
+                            <th scope="col"></th>
+                            <th scope="col">@lang('main.name')</th>
+                            <th scope="col">@lang('main.update')</th>
+                            <th scope="col">@lang('main.delete')</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -24,8 +22,8 @@
                                 <th>{{$delivery->id}}</th>
                                 <td>{{$delivery->name}}</td>
 
-                                <td><a href='/admin/delivery/{{$delivery->id}}/edit' class='destroyAircrafts btn btn-secondary'>Редагувати</ф></td>
-                                <td><button data-id='{{$delivery->id}}' class='destroy btn btn-danger'>Видалити</button></td>
+                                <td><a href='/admin/delivery/{{$delivery->id}}/edit' class='destroyAircrafts btn btn-secondary'>@lang('main.update')</ф></td>
+                                <td><button data-id='{{$delivery->id}}' class='destroy btn btn-danger'>@lang('main.delete')</button></td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -40,8 +38,8 @@
             $(document).on('click', '.destroy', function(){
                 var id = $(this).data('id');
                 $.ajax({
-                    method: 'delete',
-                    url: "/admin/delivery/destroy",
+                    method: 'get',
+                    url: "/admin/delivery/delete",
                     data:{
                         id: id,
                         "_token": "{{ csrf_token() }}"

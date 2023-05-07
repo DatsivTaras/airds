@@ -83,7 +83,7 @@ class DeliveryController extends Controller
         $delivery->fill($request->all());
         $delivery->save();
 
-        return redirect('/admin/delivery');
+        return redirect()->route('/admin/delivery');
     }
 
     /**

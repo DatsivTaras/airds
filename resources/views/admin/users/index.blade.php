@@ -1,7 +1,7 @@
 @extends('menu/adminMenu')
 
 @section('content')
-    <h1 align='center'>Користувачі</h1><br><br>
+    <h1 align='center'>@lang('main.users')</h1><br><br>
     <div class='container'>
         <div class="row">
             <div class="col-md-2"></div>
@@ -10,10 +10,10 @@
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
-                            <th scope="col">Імя</th>
-                            <th scope="col">Електронна пошта</th>
-                            <th scope="col">Статус</th>
-                            <th scope="col">Дата Реєстрації</th>
+                            <th scope="col">@lang('main.name')</th>
+                            <th scope="col">@lang('main.email')</th>
+                            <th scope="col">@lang('main.name')</th>
+                            <th scope="col">@lang('main.restrictionDate')</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -27,9 +27,9 @@
                                 <th>{{$user->created_at}}</th>
                                 <th id='statuses'>
                                     @if($user->status == 2 || $user->status == 1)
-                                        <button data-id='{{$user->id}}' id='deleted' class='btn btn-danger'>Видалити</button>
+                                        <button data-id='{{$user->id}}' id='deleted' class='btn btn-danger'>@lang('main.delete')</button>
                                     @else
-                                        <button data-id='{{$user->id}}' id='recovery' class='btn btn-success'>Відновити</button>
+                                        <button data-id='{{$user->id}}' id='recovery' class='btn btn-success'>@lang('main.restore')</button>
                                     @endif
                                 </th>
                             </tr>

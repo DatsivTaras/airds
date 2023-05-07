@@ -11,13 +11,12 @@ class BookingController extends Controller
 {
    public function index(){
 
-        dd('d');
    }
 
    public function myBooking(){
 
         $bookings = Booking::where('user_id', auth()->id())->get();
-        $notConfirmedOrders = Orders::where('user_id', auth()->id())->whereIn('status',  ['2', '1'])->get();
+        $notConfirmedOrders = Orders::where('user_id', auth()->id())->whereIn('status',  ['3', '2', '1'])->get();
         return view('bookings', compact('bookings','notConfirmedOrders'));
    }
 

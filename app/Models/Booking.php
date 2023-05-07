@@ -26,5 +26,9 @@ class Booking extends Model
     {
         return $this->hasOne(OrdersFlights::class, 'booking_id','id');
     }
+    public function bookingBasket()
+    {
+        return self::where('user_id' ,'!=' ,NULL)->where('id',$this->id)->exists();
+    }
 }
 

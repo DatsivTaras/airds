@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Classes\Enum\OrderStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderProcessingRequest;
 use App\Models\Booking;
 use App\Models\Delivery;
 use App\Models\Orders;
@@ -22,9 +23,10 @@ class OrdersController extends Controller
     {
         $confirmedOrders = Orders::where('status', OrderStatus::CONFIRMED)->get();
         $notConfirmedOrders = Orders::where('status', OrderStatus::BOOKED)->get();
+        $rejectedOrders = Orders::where('status', OrderStatus::DENIED)->get();
 
 
-        return view('admin/orders/index',compact('confirmedOrders','notConfirmedOrders'));
+        return view('admin/orders/index',compact('confirmedOrders','notConfirmedOrders','rejectedOrders'));
     }
 
     /**
@@ -38,13 +40,21 @@ class OrdersController extends Controller
         $order->status = OrderStatus::CONFIRMED;
         $order->save();
 
+        return json_encode(true) ;
+    }
+    public function rejectedStatus(Request $request)
+    {
+        $order = Orders::find($request->id);
+        $order->status = OrderStatus::DENIED;
+        $order->save();
+
         foreach($order->orderFlight as $flight){
             $booking = Booking::find($flight->booking_id);
-            $booking->user_id = auth()->id();
-            $booking->status = OrderStatus::BOOKED;
+            $booking->user_id = NULL;
+            $booking->status = NULL;
             $booking->save();
         }
-       return json_encode(true) ;
+        return json_encode(true) ;
     }
 
     public function editOrderProcessing(Request $request)
@@ -54,14 +64,20 @@ class OrdersController extends Controller
         return view('admin/orders/edit', compact('order', 'deliveries'));
     }
 
-    public function OrderProcessing(Request $request)
+    public function orderProcessing(OrderProcessingRequest $request)
     {
         $order = Orders::find($request->id);
         $order->fill($request->all());
         $order->status = OrderStatus::BOOKED;
         $order->save();
 
-        return true;
+        foreach($order->orderFlight as $flight){
+            $booking = Booking::find($flight->booking_id);
+            $booking->user_id = auth()->id();
+            $booking->status = OrderStatus::BOOKED;
+            $booking->save();
+        }
+        return json_encode(true) ;
     }
     public function create()
     {

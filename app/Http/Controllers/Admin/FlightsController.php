@@ -8,11 +8,17 @@ use App\Models\Aircrafts;
 use App\Models\Booking;
 use App\Models\Cities;
 use App\Models\Countries;
+use App\Models\Country;
 use App\Models\Flights;
 use App\Models\Orders;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Spatie\TranslationLoader\LanguageLine;
+use Symfony\Component\Finder\SplFileInfo;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class FlightsController extends Controller
 {
@@ -23,7 +29,6 @@ class FlightsController extends Controller
      */
     public function index()
     {
-
         $flights = Flights::all();
         $now =  Carbon::now();
         $week = $now->subDays(7);
@@ -42,13 +47,17 @@ class FlightsController extends Controller
      */
     public function create()
     {
+
+
+
         $flight  = new Flights();
         $flight->countryOfDispatch_id = '';
         $countries=[];
         $countries +=[
             '' => 'Виберіть Країну'
         ];
-        $countries += Countries::pluck('name', 'id')->toArray();
+        // $countries += Countries::pluck('name', 'id')->toArray();
+
         $citiesOfDispatch = [];
         $citiesOfArrival = [];
         $aircrafts = Aircrafts::pluck('name', 'id')->toArray();
@@ -64,17 +73,49 @@ class FlightsController extends Controller
      */
     public function citiOfFlights(Request $request)
     {
-        $html = '';
-        $cities = Cities::where('country_id', $request->id)->get();
-        foreach ($cities as $citi){
-            $html.= '<option value ="'.$citi->id.'">'.$citi->name.'</option>';
-        }
 
-        return response()->json($html);
+        $movies = [];
+        if($request->has('q')){
+            $search = $request->q;
+            $movies = DB::table('cities')
+                ->selectRaw( 'cities.id as id , JSON_UNQUOTE(JSON_EXTRACT(language_lines.text, "$.'.session()->get('applocale').'")) as name')
+                ->join('language_lines', 'cities.name', '=', 'language_lines.key')
+                ->where('country_id', $request->id)
+                ->where('name', 'LIKE', "%$search%")
+                ->get();
+        }
+        return response()->json($movies);
+
+        // $html = '';
+        // $cities = Cities::where('country_id', $request->id)->get();
+        // foreach ($cities as $citi){
+        //     $html.= '<option value ="'.$citi->id.'">'.$citi->name.'</option>';
+        // }
+
+        // return response()->json($html);
+    }
+
+    public function countryOfFlights(Request $request)
+    {
+        $movies = [];
+
+        if($request->has('q')){
+            $search = $request->q;
+            // $movies = Country::select("id", "name")
+            // 		->where('name', 'LIKE', "%$search%")
+            // 		->get();
+            $countries = DB::table('countries')
+                ->selectRaw('countries.id as id, JSON_UNQUOTE(JSON_EXTRACT(language_lines.text, "$.'.session()->get('applocale').'")) as name')
+                ->join('language_lines', 'countries.name', '=', 'language_lines.key')
+                ->where('name', 'LIKE', "%$search%")
+                ->get();
+            }
+        return  response()->json($countries);
     }
 
     public function store(FlightsRequest $request)
     {
+
         $flight = new  Flights();
         $flight->fill($request->all());
         $flight->save();
@@ -149,7 +190,7 @@ class FlightsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(FlightsRequest $request, $id)
     {
         $flight = Flights::find($id);
         $flight->fill($request->all());
@@ -178,7 +219,7 @@ class FlightsController extends Controller
         $classes = Booking::where('class', $request->id)
             ->doesntHave('orderFlight', 'and', function($query) use($userId){
                 $query->whereHas('order', function($query) use($userId) {
-                    $query->where('user_id', $userId);
+                    $query->where('user_id', '');
                 });
             })
             ->where('status', NULL)

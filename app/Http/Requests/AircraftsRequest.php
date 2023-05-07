@@ -31,6 +31,7 @@ class AircraftsRequest extends FormRequest
             'economy_class' => 'required|numeric|min:10|max:50',
             'description' => 'required',
 
+
         ];
     }
     public function messages()

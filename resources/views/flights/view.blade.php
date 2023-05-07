@@ -10,14 +10,12 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Країна Відправки</th>
-                            <th scope="col">Місто Відправки</th>
-                            <th scope="col">Дата Відправки</th>
-                            <th scope="col">Країна Прибуття</th>
-                            <th scope="col">Місто Прибуття</th>
-                            <th scope="col">Дата Прибуття</th>
-                            <th scope="col">Літак</th>
+                            <th scope="col">@lang('main.citiOfDispatch')</th>
+                            <th scope="col">@lang('main.dateOfDispatch')</th>
+                            <th scope="col">@lang('main.countryOfArrival')</th>
+                            <th scope="col">@lang('main.citiOfArrival')</th>
+                            <th scope="col">@lang('main.dateOfArrival')</th>
+                            <th scope="col">@lang('main.aircraft')</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,35 +45,89 @@
                 {{ Form::close() }}
 
             </div>
+        </div><br><br><br><br><br><br><br><br><br><br><br><br>
 
+        <h3 align='center'>Коментарі</h3><br>
+        <div class="p-3 mb-2 bg-secondary text-white">Додати коментар
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label"></label>
+                <textarea class="form-control" id="textComment" rows="3"></textarea>
+            </div>
 
+            <div align='right' class="mb-3">
+                <button id='sendComment' data-id='{{$flight->id}}' class='btn btn-primary'>Надіслати</button>
+                <button id='cancel' class='btn btn-danger'>Скасувати</button>
+            </div>
         </div>
+        <div id='comments'></div>
     </div>
-
 @endsection
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <script>
         $(document).ready(function (){
+
             $("#places").attr('disabled','disabled')
+            var id = $('#sendComment').data('id');
+            var user_id = '{{auth()->id()}}';
+            $.ajax({
+                    method: 'post',
+                    url: "/flight/allComments",
+                    data:{
+                        id: id,
+                        "_token": "{{ csrf_token() }}"
+                    },
+                    dataType: 'json',
+                }).done(function(result) {
 
-        });
 
-            // $(document).on('click', '#bookiаng', function(){
-            //     var id = $(this).val();
-            //     $.ajax({
-            //         method: 'post',
-            //         url: "/basket/addBasket{{$flight->id}}",
-            //         data:{
-            //             id: id,
-            //             "_token": "{{ csrf_token() }}"
-            //         },
-            //         dataType: 'json',
-            //     }).done(function(result) {
-            //         $("#booking").attr('disabled','disabled')
-            //         $("#booking").text("Відмінити ");
-            //         alert('f');
-            //     });
-            // });
+                    var comment = '';
+                    result['allCommentsd'].forEach(function(item){
+                        comment += '<div id = comment'+item['id']+' class="rounded text-white shadow-none p-3 w-50 mb-2 bg-'+(user_id == item['user_id'] ? 'primary': 'secondary' )+'">'+item['user_name']+ ' : '+ item['text']+' '+item['created_at']+(user_id == item['user_id'] ? '<a data-id ='+item['id']+' id = delete-comment> Видалити</a>': ' ' )+'</div>';
+                    })
+
+
+
+                    $('#comments').html(comment)
+                });
+            });
+            $(document).on('click', '#cancel', function(){
+                $('#textComment').val('');
+
+            });
+
+            $(document).on('click', '#delete-comment', function(){
+                var id = $(this).data('id');
+                $.ajax({
+                    method: 'get',
+                    url: "/flight/delete-comment",
+                    data:{
+                        id: id,
+                        "_token": "{{ csrf_token() }}"
+                    },
+                    dataType: 'json',
+                }).done(function(result) {
+                    $('#comment'+id).remove();
+                });
+            });
+
+            $(document).on('click', '#sendComment', function(){
+                var flight_id = $(this).data('id');
+                var text = $('#textComment').val();
+                $.ajax({
+                    method: 'post',
+                    url: "/flight/sendingComment",
+                    data:{
+                        flight_id: flight_id,
+                        text: text,
+                        "_token": "{{ csrf_token() }}"
+                    },
+                    dataType: 'json',
+                }).done(function(result) {
+                    $('#comments').prepend('<div id = comment'+result['comment']['id']+' class="rounded text-white shadow-none p-3 w-50 mb-2 bg-primary">'+ result['comment']['user_name']+' : '+result['comment']['text']+' '+result['comment']['created_at']+'<a data-id ='+result['comment']['id']+' id = delete-comment> Видалити</a></div>');
+
+                    $('#textComment').val('');
+                });
+            });
             $(document).ready(function (){
                 $('#classes').change(function (){
                     var id = $(this).val();

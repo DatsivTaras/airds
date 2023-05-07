@@ -28,9 +28,15 @@ class Flights extends Model
     {
         return $this->hasOne(Booking::class, 'flight_id','id')->where('user_id',auth()->id());
     }
+
+    public function orderFlights()
+    {
+        return $this->hasMany(OrdersFlights::class, 'flight_id','id');
+    }
+
     public function formatDateFlight($date)
     {
-        return Carbon::parse($date)->format('d-m-Y H:i:s');
+        return Carbon::parse($date)->format('d-m-Y H:i');
     }
     public function countryOfDispatch()
     {
@@ -57,5 +63,8 @@ class Flights extends Model
         return $this->hasOne(Aircrafts::class, 'id','aircraft_id');
 
     }
-
+    public function flightMainImage()
+    {
+        return $this->hasOne(Aircraf_image::class, 'aircraft_id','aircraft_id')->where('status', 1);
+    }
 }
